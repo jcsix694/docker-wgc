@@ -1,0 +1,47 @@
+version: '3.3'
+
+services:
+  db:
+    container_name: db
+    image: 'mysql:8'
+    restart: always
+    networks:
+      - default
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_DATABASE=database
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - dbvol:/var/lib/mysql
+
+  app:
+    container_name: app
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+    expose:
+    - "8080"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DBUSER=root
+      - DBPASS=password
+      - DBNAME=database
+      - DBHOST=db
+      - DBPORT=3306
+    volumes:
+      - ./api:/api/
+  redis:
+    container_name: redis
+    image: 'redis'
+    restart: always
+    ports:
+      - "6380:6379"
+
+volumes:
+  dbvol: {}
