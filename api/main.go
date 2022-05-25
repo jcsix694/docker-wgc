@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"log"
 	"os"
 	"wgcapi/controllers"
+	"wgcapi/logging"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
@@ -15,6 +15,7 @@ import (
 var db *sql.DB
 
 func main() {
+	logging.Info("Setup Starting...")
 	Environment()
 	DatabaseConnection()
 	//Docs()
@@ -22,6 +23,8 @@ func main() {
 }
 
 func MapRoutes() {
+	logging.Info("Mapping Routes")
+
 	/* Define the router */
 	router := gin.Default()
 
@@ -36,8 +39,7 @@ func Docs() {
 }
 
 func DatabaseConnection() {
-	logger, _ := zap.NewProduction()
-	defer logger.Sync() // flushes buffer, if any
+	logging.Info("Checking Database Connection")
 
 	cfg := mysql.Config{
 		User:                 os.Getenv("DB_USER"),
@@ -52,33 +54,32 @@ func DatabaseConnection() {
 	db, err = sql.Open(os.Getenv("DB_TYPE"), cfg.FormatDSN())
 
 	if err != nil {
-		log.Fatal("err")
+		logging.Fatal(err.Error())
 	}
 
-	logger.Info("Database Connection Specifics are Ok!")
+	logging.Info("Database Connection Specifics are Ok!")
 
 	pingErr := db.Ping()
 	if pingErr != nil {
-		log.Fatal(pingErr)
+		logging.Fatal(pingErr.Error())
 	}
 
-	logger.Info("Database Connected!")
+	logging.Info("Database Connected!")
 }
 
 func Environment() {
+	logging.Info("Checking Environment")
+
 	/* Load the environment file */
 	envErr := godotenv.Load()
 
 	environment := os.Getenv("APP_ENVIRONMENT")
 
-	logger, _ := zap.NewProduction()
-	defer logger.Sync() // flushes buffer, if any
-
 	if envErr != nil {
-		log.Fatal("Error loading .env file")
+		logging.Fatal("Error loading .env file")
 	}
 
-	logger.Info("Environment Configured",
+	logging.Info("Environment Configured",
 		// Structured context as strongly typed Field values.
 		zap.String("appEnvironment", environment),
 	)
