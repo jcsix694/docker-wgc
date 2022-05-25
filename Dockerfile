@@ -17,4 +17,4 @@ EXPOSE 8080
 
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -v -o /bin/server
 
-CMD ["/bin/bash"]
+CMD ["/bin/server", "/api"]
