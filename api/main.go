@@ -42,8 +42,8 @@ func DatabaseConnection() {
 	logging.Info("Checking Database Connection")
 
 	cfg := mysql.Config{
-		User:                 os.Getenv("DB_USER"),
-		Passwd:               os.Getenv("DB_PASS"),
+		User:                 os.Getenv("DB_USERNAME"),
+		Passwd:               os.Getenv("DB_PASSWORD"),
 		Net:                  "tcp",
 		Addr:                 os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT"),
 		DBName:               os.Getenv("DB_NAME"),
@@ -51,7 +51,7 @@ func DatabaseConnection() {
 	}
 	// Get a database handle.
 	var err error
-	db, err = sql.Open(os.Getenv("DB_TYPE"), cfg.FormatDSN())
+	db, err = sql.Open(os.Getenv("DB_CONNECTION"), cfg.FormatDSN())
 
 	if err != nil {
 		logging.Fatal(err.Error())
