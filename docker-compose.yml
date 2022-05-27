@@ -25,7 +25,7 @@ services:
     networks:
       - default
     expose:
-    - "8080"
+      - "8080"
     depends_on:
       - db
       - redis
@@ -33,6 +33,7 @@ services:
       - api/.env
     volumes:
       - ./api:/api/
+
   redis:
     container_name: redis
     image: 'redis'
