@@ -17,8 +17,8 @@ services:
       - dbvol:/var/lib/mysql
       - ./services/mysql-server/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  app:
-    container_name: app
+  api:
+    container_name: api
     build: .
     ports:
       - "8080:8080"
