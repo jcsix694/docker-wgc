@@ -1,45 +1,45 @@
-version: '3.3'
+    version: '3.3'
 
-services:
-  db:
-    container_name: db
-    image: 'mysql:8'
-    restart: always
-    networks:
-      - default
-    ports:
-      - "3307:3306"
-    expose:
-      - "3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
+    services:
+      db:
+        container_name: db
+        image: 'mysql:8'
+        restart: always
+        networks:
+          - default
+        ports:
+          - "3307:3306"
+        expose:
+          - "3306"
+        environment:
+          - MYSQL_ROOT_PASSWORD=root
+        volumes:
+          - dbvol:/var/lib/mysql
+          - ./services/mysql-server/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+      api:
+        container_name: api
+        build: .
+        ports:
+          - "8080:8080"
+        networks:
+          - default
+        expose:
+          - "8080"
+        depends_on:
+          - db
+          - redis
+        env_file:
+          - api/.env
+        volumes:
+          - ./api:/go/src/app
+
+      redis:
+        container_name: redis
+        image: 'redis'
+        restart: always
+        ports:
+          - "6380:6379"
+
     volumes:
-      - dbvol:/var/lib/mysql
-      - ./services/mysql-server/init.sql:/docker-entrypoint-initdb.d/init.sql
-
-  api:
-    container_name: api
-    build: .
-    ports:
-      - "8080:8080"
-    networks:
-      - default
-    expose:
-      - "8080"
-    depends_on:
-      - db
-      - redis
-    env_file:
-      - api/.env
-    volumes:
-      - ./api:/api/
-
-  redis:
-    container_name: redis
-    image: 'redis'
-    restart: always
-    ports:
-      - "6380:6379"
-
-volumes:
-  dbvol: {}
+      dbvol: {}

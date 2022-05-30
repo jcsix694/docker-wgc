@@ -1,20 +1,10 @@
 # syntax=docker/dockerfile:1
 
-FROM golang as builder
-
-RUN mkdir -p /api
-WORKDIR /api
-
-COPY api/go.mod .
-COPY api/go.sum .
-RUN go mod download
-
-COPY /api .
-
-RUN go build -o /docker-gs-ping
-
+FROM golang:latest
+RUN apt-get install git
 EXPOSE 8080
-
-RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -v -o /bin/server
-
-CMD ["/bin/server", "/api"]
+WORKDIR /go/src/app
+COPY /api .
+RUN go mod download -x
+RUN ["go", "install", "github.com/githubnemo/CompileDaemon@latest"]
+ENTRYPOINT CompileDaemon -build="go build main.go" -command="/go/src/app/main" -directory=. -polling=true
