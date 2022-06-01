@@ -1,4 +1,4 @@
-package models
+package config
 
 import (
 	"os"
@@ -8,16 +8,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type databaseInfo struct {
-	uname string
-	psw   string
-	name  string
-	host  string
-}
+var DB *gorm.DB
 
-var dbConn *gorm.DB
+func DBInit() *gorm.DB {
+	logging.Info("Checking Database Connection")
 
-func init() {
 	dsn := os.Getenv("DB_USERNAME") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/" + os.Getenv("DB_NAME") + "?charset=utf8mb4&parseTime=True&loc=Local"
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -26,9 +21,11 @@ func init() {
 		logging.Fatal(err.Error())
 	}
 
-	dbConn = db
-}
+	logging.Info("Database Connected!")
 
-func DB() *gorm.DB {
-	return dbConn
+	db.AutoMigrate()
+
+	return db
+	// Set connections?
+	// Auto Migrate?
 }

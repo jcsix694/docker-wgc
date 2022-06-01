@@ -1,6 +1,10 @@
 package controllers
 
 import (
+	"wgcapi/helpers"
+	"wgcapi/logging"
+	"wgcapi/models"
+
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,4 +28,15 @@ var albums = []album{
 // getAlbums responds with the list of all albums as JSON.
 func GetAllWrestlers(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
+}
+
+func ListBook(c *gin.Context) {
+	var book []models.Book
+	logging.Info("Trying to get all books")
+	book, err := models.GetAllBook(&book)
+	if err != nil {
+		helpers.RespondJSON(c, 404, book)
+	} else {
+		helpers.RespondJSON(c, 200, book)
+	}
 }
