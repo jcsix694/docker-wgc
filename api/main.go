@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"wgcapi/config"
+	"wgcapi/database"
 	"wgcapi/logging"
 	"wgcapi/routes"
 
@@ -13,11 +13,10 @@ import (
 func main() {
 	logging.Info("Setup Starting...")
 	Environment()
-	config.DBInit()
-	//Docs()
+	database.Connect()
+	database.Migrate()
 	r := routes.MapRoutes()
-
-	// running
+	//Docs()
 	r.Run(":" + os.Getenv("APP_PORT"))
 }
 

@@ -4,6 +4,7 @@ import (
 	"wgcapi/helpers"
 	"wgcapi/logging"
 	"wgcapi/models"
+	"wgcapi/structures"
 
 	"net/http"
 
@@ -31,7 +32,7 @@ func GetAllWrestlers(c *gin.Context) {
 }
 
 func ListBook(c *gin.Context) {
-	var book []models.Book
+	var book []structures.Book
 	logging.Info("Trying to get all books")
 	book, err := models.GetAllBook(&book)
 	if err != nil {
