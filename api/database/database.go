@@ -25,14 +25,14 @@ func Connect() *gorm.DB {
 
 	logging.Info("Database Connected!")
 
+	// Set connections?
+
 	DB = db
 
 	return DB
-	// Set connections?
-	// Auto Migrate?
 }
 
-func Migrate() {
-	DB.AutoMigrate(&structures.Book{})
+func AutoMigrate() {
+	DB.AutoMigrate(&structures.Wrestler{})
 	logging.Info("Database Auto Migration Completed")
 }

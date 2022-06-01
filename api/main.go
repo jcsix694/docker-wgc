@@ -14,7 +14,7 @@ func main() {
 	logging.Info("Setup Starting...")
 	Environment()
 	database.Connect()
-	database.Migrate()
+	database.AutoMigrate()
 	r := routes.MapRoutes()
 	//Docs()
 	r.Run(":" + os.Getenv("APP_PORT"))
