@@ -25,6 +25,8 @@ func DBInit() *gorm.DB {
 
 	db.AutoMigrate()
 
+	DB = db
+
 	return db
 	// Set connections?
 	// Auto Migrate?

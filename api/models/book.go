@@ -26,6 +26,8 @@ func GetAllBook(b *[]Book) ([]Book, error) {
 
 	if err := config.DB.Find(&book).Error; err != nil {
 		fmt.Println(err)
+		fmt.Println(err)
+		fmt.Println(err)
 		return book, err
 	} else {
 		return book, nil
