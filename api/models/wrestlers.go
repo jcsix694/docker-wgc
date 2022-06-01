@@ -3,10 +3,23 @@ package models
 import (
 	"wgcapi/database"
 	"wgcapi/logging"
+	"wgcapi/requests"
 	"wgcapi/structures"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
 )
+
+func CreateWrestler(w *requests.CreateWrestlerRequest) (structures.Wrestler, error) {
+	wrestler := structures.Wrestler{Name: w.Name, UUID: uuid.New()}
+
+	if err := database.DB.Create(&wrestler).Error; err != nil {
+		logging.Error(err.Error())
+		return wrestler, err
+	} else {
+		return wrestler, nil
+	}
+}
 
 func GetAllWrestlers(w *[]structures.Wrestler) ([]structures.Wrestler, error) {
 	var wrestler []structures.Wrestler
