@@ -14,7 +14,6 @@ func CreateWrestler(w *requests.CreateWrestlerRequest) (structures.Wrestler, err
 	wrestler := structures.Wrestler{Name: w.Name, UUID: uuid.New()}
 
 	if err := database.DB.Create(&wrestler).Error; err != nil {
-		logging.Error(err.Error())
 		return wrestler, err
 	} else {
 		return wrestler, nil

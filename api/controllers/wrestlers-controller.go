@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"wgcapi/helpers"
-	"wgcapi/logging"
 	"wgcapi/models"
 	"wgcapi/requests"
 	"wgcapi/structures"
@@ -11,13 +10,11 @@ import (
 )
 
 func CreateWrestler(c *gin.Context) {
-	logging.Info("Endpoint Hit!")
-
 	// Validate input
 	var input requests.CreateWrestlerRequest
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		// Change error to validate the lot
+		// Change error to show an array?
 		helpers.RespondJSON(c, 400, nil, err.Error(), nil)
 		return
 	}
