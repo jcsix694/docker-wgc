@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"net/http"
 	"wgcapi/helpers"
 	"wgcapi/models"
 	"wgcapi/requests"
@@ -13,8 +14,7 @@ func CreateWrestler(c *gin.Context) {
 	// Validate input
 	var input requests.CreateWrestlerRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
-		// Change error to show an array of errors
-		helpers.RespondJSON(c, 400, nil, err.Error(), nil)
+		helpers.RespondJSON(c, http.StatusBadRequest, nil, err, nil)
 		return
 	}
 
@@ -22,9 +22,9 @@ func CreateWrestler(c *gin.Context) {
 	wrestler, err := models.CreateWrestler(&input)
 
 	if err != nil {
-		helpers.RespondJSON(c, 400, wrestler, "Error", nil)
+		helpers.RespondJSON(c, http.StatusBadRequest, nil, err, nil)
 	} else {
-		helpers.RespondJSON(c, 200, wrestler, "Success", nil)
+		helpers.RespondJSON(c, http.StatusCreated, wrestler, nil, nil)
 	}
 }
 
@@ -32,8 +32,8 @@ func GetAllWrestlers(c *gin.Context) {
 	var wrestler []structures.Wrestler
 	wrestler, err := models.GetAllWrestlers(&wrestler)
 	if err != nil {
-		helpers.RespondJSON(c, 400, wrestler, "Error", nil)
+		helpers.RespondJSON(c, http.StatusNotFound, wrestler, err, nil)
 	} else {
-		helpers.RespondJSON(c, 200, wrestler, "Success", nil)
+		helpers.RespondJSON(c, http.StatusOK, wrestler, nil, nil)
 	}
 }
