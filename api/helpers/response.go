@@ -32,7 +32,10 @@ func RespondJSON(w *gin.Context, status int, payload interface{}, err error, met
 	if errors.As(err, &validate) {
 		out := make([]ApiError, len(validate))
 		for i, fe := range validate {
+			// https://stackoverflow.com/questions/70069834/return-custom-error-message-from-struct-tag-validation
+			// Fix so fields are using the json fields
 			out[i] = ApiError{fe.Field(), ValidationError(fe.Tag())}
+
 		}
 
 		res.Errors = out
