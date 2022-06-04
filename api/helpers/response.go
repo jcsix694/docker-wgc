@@ -32,7 +32,7 @@ func RespondJSON(w *gin.Context, status int, payload interface{}, err error, met
 	if errors.As(err, &validate) {
 		out := make([]ApiError, len(validate))
 		for i, fe := range validate {
-			out[i] = ApiError{fe.Field(), ErrorMessage(fe.Tag())}
+			out[i] = ApiError{fe.Field(), ValidationError(fe.Tag())}
 		}
 
 		res.Errors = out
@@ -45,7 +45,7 @@ func RespondJSON(w *gin.Context, status int, payload interface{}, err error, met
 	w.JSON(status, res)
 }
 
-func ErrorMessage(tag string) string {
+func ValidationError(tag string) string {
 	switch tag {
 	case "required":
 		return "This field is required"
