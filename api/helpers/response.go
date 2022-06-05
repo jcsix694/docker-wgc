@@ -3,7 +3,6 @@ package helpers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -36,8 +35,6 @@ func RespondJSON(w *gin.Context, status int, payload interface{}, err error, met
 		out := []ValidationError{}
 
 		for _, f := range validatorErr {
-			fmt.Println(f)
-
 			out = append(out, ValidationError{Field: f.Field(), Msg: ValidationErrorMessages(f.Tag())})
 		}
 

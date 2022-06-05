@@ -6,7 +6,6 @@ import (
 	"wgcapi/requests"
 	"wgcapi/structures"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
