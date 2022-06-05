@@ -1,7 +1,9 @@
 package helpers
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,27 +18,35 @@ type ResponseData struct {
 	Errors  interface{} `json:"errors"`
 }
 
-type ApiError struct {
+type ValidationError struct {
 	Field string `json:"field"`
 	Msg   string `json:"message"`
 }
 
 func RespondJSON(w *gin.Context, status int, payload interface{}, err error, meta interface{}) {
 	var res ResponseData
-	var validate validator.ValidationErrors
+	var validatorErr validator.ValidationErrors
+	var jsonErr *json.UnmarshalTypeError
 
 	res.Status = status
 	res.Meta = meta
 	res.Data = payload
 
-	if errors.As(err, &validate) {
-		out := make([]ApiError, len(validate))
-		for i, fe := range validate {
-			// https://stackoverflow.com/questions/70069834/return-custom-error-message-from-struct-tag-validation
-			// Fix so fields are using the json fields
-			out[i] = ApiError{fe.Field(), ValidationError(fe.Tag())}
+	if errors.As(err, &validatorErr) {
+		out := []ValidationError{}
 
+		for _, f := range validatorErr {
+			fmt.Println(f)
+
+			out = append(out, ValidationError{Field: f.Field(), Msg: ValidationErrorMessages(f.Tag())})
 		}
+
+		res.Errors = out
+	} else if errors.As(err, &jsonErr) {
+		// To Do - Validate them all at once instead of one by one
+
+		out := []ValidationError{}
+		out = append(out, ValidationError{Field: jsonErr.Field, Msg: ValidationErrorMessages(jsonErr.Type.String())})
 
 		res.Errors = out
 	} else if err != nil {
@@ -48,16 +58,6 @@ func RespondJSON(w *gin.Context, status int, payload interface{}, err error, met
 	w.JSON(status, res)
 }
 
-func ValidationError(tag string) string {
-	switch tag {
-	case "required":
-		return "This field is required"
-	case "email":
-		return "Invalid email"
-	}
-	return ""
-}
-
 func SuccessMessage(status int) string {
 	switch status {
 	case http.StatusOK:
@@ -65,5 +65,5 @@ func SuccessMessage(status int) string {
 	case http.StatusCreated:
 		return "created"
 	}
-	return ""
+	return "-"
 }

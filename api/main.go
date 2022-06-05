@@ -3,9 +3,12 @@ package main
 import (
 	"os"
 	"wgcapi/database"
+	"wgcapi/helpers"
 	"wgcapi/logging"
 	"wgcapi/routes"
 
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 )
@@ -16,6 +19,11 @@ func main() {
 	database.Connect()
 	database.AutoMigrate()
 	r := routes.MapRoutes()
+
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		helpers.ConfigureValidationJsonFields(v)
+	}
+
 	//Docs()
 	r.Run(":" + os.Getenv("APP_PORT"))
 }

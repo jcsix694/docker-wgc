@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func CreateWrestler(w *requests.CreateWrestlerRequest) (structures.Wrestler, error) {
+func CreateWrestlerData(w *requests.CreateWrestlerRequest) (structures.Wrestler, error) {
 	wrestler := structures.Wrestler{Name: w.Name, UUID: uuid.New()}
 
 	if err := database.DB.Create(&wrestler).Error; err != nil {
@@ -20,7 +20,7 @@ func CreateWrestler(w *requests.CreateWrestlerRequest) (structures.Wrestler, err
 	}
 }
 
-func GetAllWrestlers(w *[]structures.Wrestler) ([]structures.Wrestler, error) {
+func GetAllWrestlersData(w *[]structures.Wrestler) ([]structures.Wrestler, error) {
 	var wrestler []structures.Wrestler
 
 	if err := database.DB.Find(&wrestler).Error; err != nil {
@@ -29,4 +29,8 @@ func GetAllWrestlers(w *[]structures.Wrestler) ([]structures.Wrestler, error) {
 	} else {
 		return wrestler, nil
 	}
+}
+
+func GetWrestlerData() {
+
 }
