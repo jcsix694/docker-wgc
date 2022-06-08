@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"fmt"
+	"github.com/google/uuid"
 	"net/http"
 	"wgcapi/helpers"
 	"wgcapi/models"
@@ -15,12 +15,11 @@ func CreateWrestler(c *gin.Context) {
 	// Validate input
 	var input requests.CreateWrestlerRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
-		fmt.Println(err)
 		helpers.RespondJSON(c, http.StatusBadRequest, nil, err, nil)
 		return
 	}
 
-	// Check if the wrestler already exists
+	// Check if the wrestler already exists by name
 
 	// Creates the Wrestler
 	wrestler, err := models.CreateWrestlerData(&input)
@@ -42,6 +41,20 @@ func GetAllWrestlers(c *gin.Context) {
 	}
 }
 
-func GetWrestler() {
+func GetWrestlerByUuid(c *gin.Context) {
+	uuid, err := uuid.Parse(c.Param("uuid"))
 
+	if err != nil {
+		helpers.RespondJSON(c, http.StatusNotFound, nil, err, nil)
+		return
+	}
+
+	mapData := requests.GetWrestlerRequest{UUID: uuid}
+	wrestler, err := models.GetWrestlerData(mapData)
+
+	if err != nil {
+		helpers.RespondJSON(c, http.StatusNotFound, nil, err, nil)
+	} else {
+		helpers.RespondJSON(c, http.StatusOK, wrestler, nil, nil)
+	}
 }

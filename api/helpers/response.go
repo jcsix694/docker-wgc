@@ -47,7 +47,10 @@ func RespondJSON(w *gin.Context, status int, payload interface{}, err error, met
 
 		res.Errors = out
 	} else if err != nil {
-		res.Errors = err.Error()
+		out := []ValidationError{}
+		out = append(out, ValidationError{Msg: err.Error()})
+
+		res.Errors = out
 	} else {
 		res.Success = SuccessMessage(status)
 	}
@@ -58,9 +61,9 @@ func RespondJSON(w *gin.Context, status int, payload interface{}, err error, met
 func SuccessMessage(status int) string {
 	switch status {
 	case http.StatusOK:
-		return "ok"
+		return "Returned Data"
 	case http.StatusCreated:
-		return "created"
+		return "Created Data"
 	}
 	return "-"
 }

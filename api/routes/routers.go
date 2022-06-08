@@ -17,6 +17,7 @@ func MapRoutes() *gin.Engine {
 	v1 := r.Group(os.Getenv("APP_VERSION"))
 	{
 		v1.GET("/wrestlers", controllers.GetAllWrestlers)
+		v1.GET("/wrestlers/:uuid", controllers.GetWrestlerByUuid)
 		v1.POST("/wrestlers", controllers.CreateWrestler)
 	}
 

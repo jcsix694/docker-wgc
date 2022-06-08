@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"wgcapi/database"
 	"wgcapi/logging"
 	"wgcapi/requests"
@@ -30,6 +31,13 @@ func GetAllWrestlersData(w *[]structures.Wrestler) ([]structures.Wrestler, error
 	}
 }
 
-func GetWrestlerData() {
+func GetWrestlerData(w requests.GetWrestlerRequest) (structures.Wrestler, error) {
+	var wrestler structures.Wrestler
+	result := database.DB.Find(&wrestler, w)
 
+	if result.RowsAffected < 1 {
+		return wrestler, errors.New("No Data Found")
+	} else {
+		return wrestler, nil
+	}
 }
