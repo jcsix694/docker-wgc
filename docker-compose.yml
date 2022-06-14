@@ -2,6 +2,7 @@
 
     services:
       db:
+        platform: linux/amd64
         container_name: wgc-db
         image: 'mysql:8'
         restart: always
